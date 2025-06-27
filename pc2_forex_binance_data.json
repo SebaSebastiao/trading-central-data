@@ -1,0 +1,10 @@
+{
+  "computer_id": "PC2_FOREX_BINANCE",
+  "active_markets": ["FOREX", "BINANCE"],
+  "current_status": "OFFLINE",
+  "balance": 0,
+  "trades_today": [],
+  "last_update": "2025-06-27T01:59:56Z",
+  "trading_active": false,
+  "trading_paused": false
+}

@@ -1,0 +1,10 @@
+{
+  "computer_id": "PC1_B3",
+  "active_markets": ["B3"],
+  "current_status": "OFFLINE",
+  "balance": 0,
+  "trades_today": [],
+  "last_update": "2025-06-27T01:59:56Z",
+  "trading_active": false,
+  "trading_paused": false
+}
