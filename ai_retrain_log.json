@@ -1,0 +1,32 @@
+[
+  {
+    "timestamp": "2025-06-28T02:41:59.990322+00:00",
+    "model_version": "CRYPTO_PROFESSIONAL_v30_R8519",
+    "market_type": "CRYPTO",
+    "old_accuracy": 83.4,
+    "accuracy": 85.9,
+    "improvement": 2.6,
+    "analysis_count": 20,
+    "training_duration": 1.0
+  },
+  {
+    "timestamp": "2025-06-28T12:18:45.354081+00:00",
+    "model_version": "B3_PROFESSIONAL_v30_R3125",
+    "market_type": "B3",
+    "old_accuracy": 82.9,
+    "accuracy": 83.7,
+    "improvement": 0.8,
+    "analysis_count": 20,
+    "training_duration": 1.0
+  },
+  {
+    "timestamp": "2025-06-28T16:10:25.570683+00:00",
+    "model_version": "CRYPTO_PROFESSIONAL_v30_R7025",
+    "market_type": "CRYPTO",
+    "old_accuracy": 85.6,
+    "accuracy": 88.5,
+    "improvement": 2.9,
+    "analysis_count": 20,
+    "training_duration": 1.0
+  }
+]
