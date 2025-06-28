@@ -14,9 +14,6 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     
-    <!-- Apple Touch Icon -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjE5MiIgaGVpZ2h0PSIxOTIiIHJ4PSIyNCIgZmlsbD0idXJsKCNncmFkaWVudDBfMV8yKSIvPjx0ZXh0IHg9Ijk2IiB5PSIxMDUiIGZvbnQtZmFtaWx5PSJBcmlhbCIgZm9udC1zaXplPSIzNiIgZmlsbD0id2hpdGUiIHRleHQtYW5jaG9yPSJtaWRkbGUiPvCfmoA8L3RleHQ+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkaWVudDBfMV8yIiB4MT0iMCIgeTE9IjAiIHgyPSIxOTIiIHkyPSIxOTIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjNjY3RWVBIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNzY0QkEyIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PC9zdmc+">
-    
     <style>
         * {
             margin: 0;
@@ -195,7 +192,19 @@
             margin-bottom: 20px;
         }
         
-        /* PWA Install Button */
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            z-index: 1000;
+            max-width: 200px;
+        }
+        
         .install-prompt {
             position: fixed;
             bottom: 20px;
@@ -217,24 +226,12 @@
             40% { transform: translateX(-50%) translateY(-10px); }
             60% { transform: translateX(-50%) translateY(-5px); }
         }
-        
-        /* Cache Buster */
-        .cache-info {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 10px;
-            z-index: 1000;
-        }
     </style>
 </head>
 <body>
-    <div class="cache-info">
-        V2.1 - PWA
+    <div id="debug-info" class="debug-info">
+        Debug: V3.0<br>
+        Status: Carregando...
     </div>
     
     <div class="container">
@@ -256,37 +253,37 @@
         </div>
         
         <div id="content" style="display: none;">
-            <!-- PC1 Forex/Binance (SEU PC ATUAL) -->
+            <!-- PC1 (SEU PC FÍSICO) - LENDO DADOS CORRETOS -->
             <div class="status-card">
                 <div class="pc-status">
-                    <span class="pc-name">🌍 PC1 - Forex/Binance (ATIVO)</span>
-                    <span id="pc1-status" class="status-indicator status-offline"></span>
+                    <span class="pc-name">🌍 PC1 - Forex/Binance (SEU PC)</span>
+                    <span id="forex-status" class="status-indicator status-offline"></span>
                 </div>
                 <div class="stats">
                     <div class="stat-item">
-                        <span id="pc1-balance" class="stat-value">$0</span>
+                        <span id="forex-balance" class="stat-value">$0</span>
                         <span class="stat-label">Saldo</span>
                     </div>
                     <div class="stat-item">
-                        <span id="pc1-trades" class="stat-value">0</span>
+                        <span id="forex-trades" class="stat-value">0</span>
                         <span class="stat-label">Trades Hoje</span>
                     </div>
                 </div>
             </div>
             
-            <!-- PC2 B3 (MERCADO FECHADO) -->
+            <!-- PC2 (B3) - MERCADO FECHADO -->
             <div class="status-card">
                 <div class="pc-status">
                     <span class="pc-name">💹 PC2 - B3 (FECHADO)</span>
-                    <span id="pc2-status" class="status-indicator status-offline"></span>
+                    <span id="b3-status" class="status-indicator status-offline"></span>
                 </div>
                 <div class="stats">
                     <div class="stat-item">
-                        <span id="pc2-balance" class="stat-value">$0</span>
+                        <span id="b3-balance" class="stat-value">$0</span>
                         <span class="stat-label">Saldo</span>
                     </div>
                     <div class="stat-item">
-                        <span id="pc2-trades" class="stat-value">0</span>
+                        <span id="b3-trades" class="stat-value">0</span>
                         <span class="stat-label">Trades Hoje</span>
                     </div>
                 </div>
@@ -314,7 +311,6 @@
         </div>
     </div>
     
-    <!-- PWA Install Prompt -->
     <div id="install-prompt" class="install-prompt" onclick="installApp()">
         📱 Instalar App
     </div>
@@ -360,26 +356,39 @@
         // Carregar dados iniciais
         window.onload = function() {
             loadData();
-            // Auto-refresh a cada 15 segundos (mais rápido)
-            setInterval(loadData, 15000);
+            setInterval(loadData, 10000); // A cada 10 segundos
         };
         
         async function loadData() {
             try {
+                updateDebug('Carregando dados...');
                 document.getElementById('loading').style.display = 'block';
                 document.getElementById('error').style.display = 'none';
                 
-                // MAPEAMENTO CORRETO:
-                // PC1 no app = PC1 físico (Forex/Binance - ATIVO)
-                // PC2 no app = PC2 físico (B3 - FECHADO)
+                // CORREÇÃO: PC1 físico salva em pc1_b3_data.json mas é FOREX!
+                // Vamos ler os dois arquivos e determinar qual está ativo
                 const [pc1Data, pc2Data] = await Promise.all([
-                    fetchFileData('pc1_forex_binance_data.json'),    // PC1 = Forex (ATIVO)
-                    fetchFileData('pc2_b3_data.json')                // PC2 = B3 (FECHADO)
+                    fetchFileData('pc1_b3_data.json'),        // Seu PC1 físico
+                    fetchFileData('pc2_forex_binance_data.json') // Seu PC2 físico
                 ]);
                 
-                // MOSTRAR DADOS REAIS:
-                if (pc1Data) updatePCStatus('pc1', pc1Data);
-                if (pc2Data) updatePCStatus('pc2', pc2Data);
+                updateDebug(`PC1: ${pc1Data?.current_status || 'NULL'}<br>PC2: ${pc2Data?.current_status || 'NULL'}`);
+                
+                // LÓGICA CORRETA:
+                // Se PC1 está ACTIVE, então é o que você está usando (independente do nome do arquivo)
+                if (pc1Data && pc1Data.current_status === 'ACTIVE') {
+                    // PC1 está ativo = seu PC operando Forex (mesmo que o arquivo diga B3)
+                    updatePCStatus('forex', pc1Data, 'PC1 (FOREX ATIVO)');
+                    updatePCStatus('b3', pc2Data, 'PC2 (B3 OFFLINE)');
+                } else if (pc2Data && pc2Data.current_status === 'ACTIVE') {
+                    // PC2 está ativo
+                    updatePCStatus('forex', pc2Data, 'PC2 (FOREX ATIVO)');
+                    updatePCStatus('b3', pc1Data, 'PC1 (B3 OFFLINE)');
+                } else {
+                    // Nenhum ativo, mostrar ambos offline
+                    updatePCStatus('forex', pc1Data, 'FOREX OFFLINE');
+                    updatePCStatus('b3', pc2Data, 'B3 OFFLINE');
+                }
                 
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('content').style.display = 'block';
@@ -387,16 +396,22 @@
                 document.getElementById('last-update').textContent = 
                     `Última atualização: ${new Date().toLocaleTimeString('pt-BR')}`;
                     
+                updateDebug(`Atualizado: ${new Date().toLocaleTimeString('pt-BR')}`);
+                    
             } catch (error) {
                 console.error('Erro:', error);
+                updateDebug(`ERRO: ${error.message}`);
                 document.getElementById('loading').style.display = 'none';
                 document.getElementById('error').style.display = 'block';
             }
         }
         
+        function updateDebug(message) {
+            document.getElementById('debug-info').innerHTML = `Debug: V3.0<br>${message}`;
+        }
+        
         async function fetchFileData(filename) {
             try {
-                // Cache buster para forçar atualização
                 const cacheBuster = Date.now();
                 const response = await fetch(`${GITHUB_API}/${filename}?cb=${cacheBuster}`);
                 const data = await response.json();
@@ -408,48 +423,48 @@
             }
         }
         
-        function updatePCStatus(pcId, data) {
-            const statusElement = document.getElementById(`${pcId}-status`);
-            const balanceElement = document.getElementById(`${pcId}-balance`);
-            const tradesElement = document.getElementById(`${pcId}-trades`);
+        function updatePCStatus(pcType, data, debugName) {
+            const statusElement = document.getElementById(`${pcType}-status`);
+            const balanceElement = document.getElementById(`${pcType}-balance`);
+            const tradesElement = document.getElementById(`${pcType}-trades`);
             
-            console.log(`Atualizando ${pcId}:`, data); // Debug
+            if (!data) {
+                if (statusElement) statusElement.className = 'status-indicator status-offline';
+                if (balanceElement) balanceElement.textContent = '$0';
+                if (tradesElement) tradesElement.textContent = '0';
+                return;
+            }
+            
+            console.log(`${debugName}:`, data);
             
             // Atualizar status
-            statusElement.className = 'status-indicator';
-            if (data.current_status === 'ACTIVE') {
-                statusElement.classList.add('status-active');
-            } else if (data.trading_paused) {
-                statusElement.classList.add('status-paused');
-            } else if (data.current_status === 'STOPPED') {
-                statusElement.classList.add('status-stopped');
-            } else {
-                statusElement.classList.add('status-offline');
+            if (statusElement) {
+                statusElement.className = 'status-indicator';
+                if (data.current_status === 'ACTIVE') {
+                    statusElement.classList.add('status-active');
+                } else if (data.trading_paused) {
+                    statusElement.classList.add('status-paused');
+                } else if (data.current_status === 'STOPPED') {
+                    statusElement.classList.add('status-stopped');
+                } else {
+                    statusElement.classList.add('status-offline');
+                }
             }
             
             // Atualizar dados
-            balanceElement.textContent = `$${data.balance?.toLocaleString('pt-BR') || '0'}`;
-            tradesElement.textContent = data.trades_today || '0';
+            if (balanceElement) {
+                balanceElement.textContent = `$${data.balance?.toLocaleString('pt-BR') || '0'}`;
+            }
+            if (tradesElement) {
+                const trades = Array.isArray(data.trades_today) ? data.trades_today.length : (data.trades_today || 0);
+                tradesElement.textContent = trades.toString();
+            }
         }
         
         async function sendCommand(command) {
             try {
-                const commandData = {
-                    commands: [{
-                        command: command,
-                        target: 'ALL',
-                        timestamp: new Date().toISOString(),
-                        processed: false,
-                        sender: 'Mobile App'
-                    }]
-                };
-                
-                // Simular envio de comando
                 showSuccess(`Comando ${command} enviado!`);
-                
-                // Atualizar dados após 2 segundos
                 setTimeout(loadData, 2000);
-                
             } catch (error) {
                 console.error('Erro ao enviar comando:', error);
                 showError('Erro ao enviar comando');
