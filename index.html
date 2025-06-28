@@ -373,8 +373,8 @@
                 // PC1 no app = PC1 físico (Forex/Binance - ATIVO)
                 // PC2 no app = PC2 físico (B3 - FECHADO)
                 const [pc1Data, pc2Data] = await Promise.all([
-                    fetchFileData('pc1_b3_data.json'),        // Dados reais do PC1
-                    fetchFileData('pc2_forex_binance_data.json') // Dados reais do PC2
+                    fetchFileData('pc1_forex_binance_data.json'),    // PC1 = Forex (ATIVO)
+                    fetchFileData('pc2_b3_data.json')                // PC2 = B3 (FECHADO)
                 ]);
                 
                 // MOSTRAR DADOS REAIS:
