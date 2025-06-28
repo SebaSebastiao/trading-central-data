@@ -220,10 +220,10 @@
         </div>
         
         <div id="content" style="display: none;">
-            <!-- PC1 B3 -->
+            <!-- PC1 Forex/Binance -->
             <div class="status-card">
                 <div class="pc-status">
-                    <span class="pc-name">💹 PC1 - B3</span>
+                    <span class="pc-name">🌍 PC1 - Forex/Binance</span>
                     <span id="pc1-status" class="status-indicator status-offline"></span>
                 </div>
                 <div class="stats">
@@ -238,10 +238,10 @@
                 </div>
             </div>
             
-            <!-- PC2 Forex/Binance -->
+            <!-- PC2 B3 -->
             <div class="status-card">
                 <div class="pc-status">
-                    <span class="pc-name">🌍 PC2 - Forex/Binance</span>
+                    <span class="pc-name">💹 PC2 - B3</span>
                     <span id="pc2-status" class="status-indicator status-offline"></span>
                 </div>
                 <div class="stats">
@@ -335,8 +335,8 @@
                 
                 // Carregar dados dos PCs
                 const [pc1Data, pc2Data] = await Promise.all([
-                    fetchFileData('pc1_b3_data.json'),
-                    fetchFileData('pc2_forex_binance_data.json')
+                    fetchFileData('pc1_forex_binance_data.json'),
+                    fetchFileData('pc2_b3_data.json')
                 ]);
                 
                 if (pc1Data) updatePCStatus('pc1', pc1Data);
